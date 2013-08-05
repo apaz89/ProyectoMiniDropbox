@@ -104,9 +104,7 @@ namespace MiniDropbox.Web
                 if (authCookie == null)
                     return;
 
-
                 FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-
 
                 string[] roles = authTicket.UserData.Split(new[] {'|'});
                 var fi = (FormsIdentity) (Context.User.Identity);

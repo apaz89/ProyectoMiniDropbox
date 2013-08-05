@@ -35,6 +35,6 @@ namespace MiniDropbox.Web.Controllers
         public ActionResult Register()
         {
             return View(new AccountInputModel());
-        }
+        }   
     }
 }
