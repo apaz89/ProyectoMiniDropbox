@@ -6,6 +6,7 @@ using System.Text;
 using MiniDropbox.Domain;
 using MiniDropbox.Domain.Services;
 using NHibernate;
+using NHibernate.Hql.Ast.ANTLR;
 using NHibernate.Linq;
 
 namespace MiniDropbox.Data
@@ -29,6 +30,7 @@ namespace MiniDropbox.Data
         {
             var item = _session.Get<T>(id);
             return item;
+
         }
 
         public IQueryable<T> Query<T>(Expression<Func<T, bool>> expression) where T : class, IEntity
@@ -36,6 +38,19 @@ namespace MiniDropbox.Data
             return _session.Query<T>().Where(expression);
         }
 
-        
-    }
+        public List<T> AllItemsRead<T>()
+        {
+            var tablaQuery =
+                (from tabla in _session.Query<T>() select tabla).ToList();
+            return tablaQuery;
+        }
+
+        public Account GetAccountEmail(string email)
+        {
+            var item = (from tabla in _session.Query<Account>()
+                                 where tabla.Email == email
+                                 select tabla).FirstOrDefault();
+            return item;
+        }
+    }   
 }

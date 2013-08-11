@@ -1,5 +1,5 @@
 ﻿@using BootstrapSupport
-@model List<MiniDropbox.Web.Models.DiskContentModel>
+@model System.Collections.Generic.List<MiniDropbox.Domain.Account>
 
 @{
     ViewBag.Title = "MyContent";
@@ -19,6 +19,7 @@
             }
             <th></th>
         </tr>
+        <tr>@ViewData["Nombre"]</tr>
     </thead>
     @{ int index = 0; }
     @foreach (var model in Model)
@@ -49,6 +50,7 @@
                         }
                     </ul>
                 </div>
+
             </td>
         </tr>
             index++;

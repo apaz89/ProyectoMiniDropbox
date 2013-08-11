@@ -13,8 +13,7 @@ namespace MiniDropbox.Web.Controllers
         [HttpGet]
         public ActionResult ListAllContent()
         {
-
-            var listOfContent = Builder<DiskContentModel>.CreateListOfSize(10).Build().ToList(); 
+            var listOfContent = Builder<DiskContentModel>.CreateListOfSize(15).Build().ToList(); 
             return View(listOfContent);
         }
     }

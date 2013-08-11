@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using MiniDropbox.Domain;
 using MiniDropbox.Domain.Services;
 using NHibernate;
@@ -30,6 +31,23 @@ namespace MiniDropbox.Data
         {
             throw new NotImplementedException();
         }
+
+        public void BeginTransaccion()
+        {
+            _session.Transaction.Begin(IsolationLevel.Serializable);
+        }
+
+        public void CommitTransaccion()
+        {
+            _session.Transaction.Commit();
+        }
+
+        public void RollBackTransaccion()
+        {
+            _session.Transaction.Rollback();
+        }
+
+
 
     }
 }

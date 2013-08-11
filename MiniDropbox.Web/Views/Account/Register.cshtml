@@ -5,7 +5,7 @@
 {
     @Html.ValidationSummary(true)
     <fieldset class="form-horizontal">
-        <legend>@Model.GetLabel() <small>Details</small></legend>
+        <legend>Regístrate en menos de un minuto.<small></small></legend>
         @foreach (var property in Model.VisibleProperties())
         {
             using(Html.ControlGroupFor(property.Name)){
@@ -17,11 +17,12 @@
             }
         }
 		<div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save changes</button>
-            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn " })
+            <button type="submit" class="btn btn-primary">Create my account</button>
+            @Html.ActionLink("Cancel", "LogIn", null, new { @class = "btn " })
           </div>
     </fieldset>
 }
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @*@Html.ActionLink("Home", "LogIn")*@
 </div>
+<a><font size="6" color="Red"><a>@ViewData["ErrorReg"]</a></font></a>

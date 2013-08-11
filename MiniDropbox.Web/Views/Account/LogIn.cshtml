@@ -1,4 +1,5 @@
-﻿@using Microsoft.Web.Mvc
+﻿@using BootstrapSupport
+@using Microsoft.Web.Mvc
 @model MiniDropbox.Web.Models.AccountLoginModel
 
 @{
@@ -19,7 +20,15 @@
               <input type="checkbox" value="remember-me"> Remember me
           </label>@*
     @Html.ActionLink("Sign In","LogIn","Account",new {@class="btn btn-large btn-primary"});
-        *@<button class="btn btn-large btn-primary" type="submit">Sign in</button>
-    @Html.ActionLink("Registrarse", "Register", "Account", new { @class = "btn btn-large btn-primary" });
+        *@<button class="btn btn-large btn-primary" type="submit">Login</button>
+    @Html.ActionLink("Sign in", "Register", "Account", new { @class = "btn btn-large btn-primary" });
+    
+    <b></b>
+    <h1>
+        @Html.ActionLink("Forgot your Password", "ForgotPassword", "Account", new { @class = "btn btn-link btn-primary" })
+    </h1>
+    <a>@ViewData["ErrorPass"]</a>
 }
+
+
 
