@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using MiniDropbox.Domain;
+using MiniDropbox.Domain.Entities;
 using MiniDropbox.Domain.Services;
 using NHibernate;
 using NHibernate.Hql.Ast.ANTLR;
@@ -51,6 +52,16 @@ namespace MiniDropbox.Data
                                  where tabla.Email == email
                                  select tabla).FirstOrDefault();
             return item;
+        }
+
+        public Account GetAccountwithToken(string token)
+        {
+            var _Token = (from tabla in _session.Query<TransaccionesUrl>() where tabla.token==token select tabla ).FirstOrDefault();
+            if (_Token != null)
+            {
+                return GetById<Account>(_Token.Account_Id);
+            }
+            return new Account();
         }
     }   
 }

@@ -12,6 +12,7 @@ namespace MiniDropbox.Domain.Services
         IQueryable<T> Query<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
         List<T> AllItemsRead<T>();
         Account GetAccountEmail(string email);
+        Account GetAccountwithToken(string token);
     }
 
     

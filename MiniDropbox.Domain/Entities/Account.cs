@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MiniDropbox.Domain.Entities;
 
 namespace MiniDropbox.Domain
 {
@@ -15,6 +16,7 @@ namespace MiniDropbox.Domain
         public virtual string Tipo { get; set; }//administrador, cliente
         public virtual bool Estado { get; set; }
         public virtual IList<File> Files { get; set; }
+        public virtual IList<TransaccionesUrl> TranUrl { get; set; }
         
     }
 }

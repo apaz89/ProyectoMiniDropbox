@@ -17,9 +17,9 @@ namespace BootstrapMvcSample
             routes.MapNavigationRoute<HomeController>("Home", c => c.Index());
 
             routes.MapNavigationRoute<ExampleLayoutsController>(NameHome, c => c.Starter())
-                  .AddChildRoute<ExampleLayoutsController>("Marketing", c => c.Marketing())
-                  .AddChildRoute<ExampleLayoutsController>("Fluid", c => c.Fluid())
-                  .AddChildRoute<ExampleLayoutsController>("Sign In", c => c.SignIn())
+                  .AddChildRoute<ExampleLayoutsController>("Usered register", c => c.Marketing())
+                  .AddChildRoute<ExampleLayoutsController>("Package Premium", c => c.Fluid())
+                  .AddChildRoute<ExampleLayoutsController>("Logout", c => c.SignIn())
                 ;
         }
     }
