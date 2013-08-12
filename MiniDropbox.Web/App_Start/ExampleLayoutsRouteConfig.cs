@@ -5,22 +5,23 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using BootstrapMvcSample.Controllers;
+using MiniDropbox.Web.Controllers;
 using NavigationRoutes;
 
 namespace BootstrapMvcSample
 {
     public class ExampleLayoutsRouteConfig
     {
-        public static string NameHome { get; set; }
+       
         public static void RegisterRoutes(RouteCollection routes)
         {
-            routes.MapNavigationRoute<HomeController>("Home", c => c.Index());
+            routes.MapNavigationRoute<DiskController>("Home", c => c.ListAllContent());
 
-            routes.MapNavigationRoute<ExampleLayoutsController>(NameHome, c => c.Starter())
-                  .AddChildRoute<ExampleLayoutsController>("Usered register", c => c.Marketing())
-                  .AddChildRoute<ExampleLayoutsController>("Package Premium", c => c.Fluid())
-                  .AddChildRoute<ExampleLayoutsController>("Logout", c => c.SignIn())
+            routes.MapNavigationRoute<ListAccountController>("Opciones de Perfil", c => c.Index())
+                  .AddChildRoute<AccountController>("Perfil", c => c.UpdatePerfil())
+                  .AddChildRoute<ListAccountController>("Usered register", c => c.ListAccount())
+                  .AddChildRoute<AccountController>("Logout", c => c.LogIn())
                 ;
         }
-    }
+     }
 }

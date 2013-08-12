@@ -13,6 +13,7 @@ namespace MiniDropbox.Domain.Services
         List<T> AllItemsRead<T>();
         Account GetAccountEmail(string email);
         Account GetAccountwithToken(string token);
+        
     }
 
     

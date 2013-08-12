@@ -22,7 +22,7 @@ namespace MiniDropbox.Web.Controllers
         private EncryptString.Encrypt decode = new EncryptString.Encrypt();
         private Clases.EnvioEmail sendmail = new EnvioEmail();
         TransaccionesUrl urls = new TransaccionesUrl();
-        static Account raccAccount = new Account();
+        private Account raccAccount = new Account();
         private readonly IReadOnlyRepository _readOnlyRepository;
         private readonly IWriteOnlyRepository _writeOnlyRepository;
 
@@ -55,7 +55,9 @@ namespace MiniDropbox.Web.Controllers
             {
                 if (decode.decryptMe(account.Password) == mode.Password)
                 {
-                    ExampleLayoutsRouteConfig.NameHome = account.Nombre;
+                    //ExampleLayoutsRouteConfig.NameHome = account.Nombre;
+                    Session["Iduser"] = account.Id;
+                    Session["Nombre"] = account.Nombre;
                     return RedirectToAction("ListAllContent", "Disk");
                 }
                 else
@@ -105,6 +107,7 @@ namespace MiniDropbox.Web.Controllers
                 }
                 else
                 {
+                    Session["Iduser"]=register.Id;
                     _writeOnlyRepository.CommitTransaccion();
                 }
             }
@@ -172,10 +175,14 @@ namespace MiniDropbox.Web.Controllers
         {
             ViewData["ErrorReset"] = Mjserror;
             Mjserror = "";
-            raccAccount=_readOnlyRepository.GetAccountwithToken(Token);
+            if (Token != null)
+            {
+                Session["Token"] = Token;
+            }
             return View(new ResetPasswordModel());
         }
 
+      
         [HttpPost]
         public ActionResult ResetPassword(ResetPasswordModel model)
         {
@@ -185,12 +192,79 @@ namespace MiniDropbox.Web.Controllers
             }
             else
             {
-                raccAccount.Password = decode.encryptMe(model.NuevoPassword);
-                raccAccount.Nombre = "Pedro";
-                _writeOnlyRepository.Update(raccAccount);
-                Mjserror = "Contraseña cambiada correctamente, proceda a ingresar";
+                raccAccount = _readOnlyRepository.GetAccountwithToken(Session["Token"].ToString());
+                if (raccAccount != null)
+                {
+                    raccAccount.Password = decode.encryptMe(model.NuevoPassword);
+                    try
+                    {
+                        _writeOnlyRepository.BeginTransaccion();
+                        _writeOnlyRepository.Update<Account>(raccAccount);
+                        _writeOnlyRepository.CommitTransaccion();
+                        Mjserror = "Contraseña cambiada correctamente, proceda a ingresar";
+                    }
+                    catch (Exception ee)
+                    {
+                        _writeOnlyRepository.RollBackTransaccion();
+                        Mjserror = ee.Message;
+                    }
+                }
             }
             return RedirectToAction("ResetPassword","Account");
+        }
+        
+        [HttpGet]
+        public ActionResult UpdatePerfil()
+        {
+            ViewData["ErrorUpPerfil"] = Mjserror;
+            Mjserror = "";
+            
+            UpdatePerfilModel model = new UpdatePerfilModel();
+            var _temp = _readOnlyRepository.GetById<Account>(Convert.ToInt64(Session["Iduser"].ToString()));
+            model.Nombre = _temp.Nombre;
+            model.Email = _temp.Email;
+            model.Consumo = _temp.Consumo;
+            model.EspacioAsignado = _temp.EspacioAsignado;
+            model.Password = decode.encryptMe(_temp.Password);
+            model.ConfirPassword = decode.encryptMe(_temp.Password);
+            model.Apellido = _temp.Apellido;
+            return View("UpdatePerfil", model);
+        }
+
+        [HttpPost]
+        public ActionResult UpdatePerfil(UpdatePerfilModel model)
+        {
+            if (model.ConfirPassword != model.Password)
+            {
+                Mjserror = "La confirmacion de la contraseña no es igual";
+            }
+            else
+            {
+                var _temp = _readOnlyRepository.GetById<Account>(Convert.ToInt64(Session["Iduser"].ToString()));
+                _temp.Nombre = model.Nombre;
+                _temp.Apellido = model.Apellido;
+                _temp.Password = decode.encryptMe(model.Password);
+                try
+                {
+                    _writeOnlyRepository.BeginTransaccion();
+                    _writeOnlyRepository.Update<Account>(_temp);
+                    _writeOnlyRepository.CommitTransaccion();
+                    Mjserror = "Cambios salvados correctamente";
+                }
+                catch (Exception ee)
+                {
+                    _writeOnlyRepository.RollBackTransaccion();
+                    Mjserror = ee.Message;
+                }
+            }
+            return RedirectToAction("UpdatePerfil", "Account");
+        }
+
+
+        [HttpGet]
+        public ActionResult Home()
+        {
+            return RedirectToAction("ListAllContent", "Disk");
         }
     }
 }

@@ -1,0 +1,29 @@
+﻿
+@using BootstrapSupport
+@model MiniDropbox.Web.Models.UpdatePerfilModel
+@using (@Html.BeginForm("UpdatePerfil", "Account", FormMethod.Post, new { @class = "form-signin" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset class="form-horizontal">
+        <legend>Datos de mi perfil.<small></small></legend>
+        @foreach (var property in Model.VisibleProperties())
+        {
+            using(Html.ControlGroupFor(property.Name)){
+                @Html.Label(property.Name.ToSeparatedWords(), new { @class = "control-label" })
+                 <div class="controls">
+                     @Html.Editor(property.Name, new { @class = "input-xlarge" })
+                     @Html.ValidationMessage(property.Name, null, new { @class = "help-inline" })
+                     
+                 </div>
+            }
+        }
+		<div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            @Html.ActionLink("Cancel", "Home", null, new { @class = "btn " })
+          </div>
+    </fieldset>
+}
+<div>
+    @*@Html.ActionLink("Home", "LogIn")*@
+</div>
+<a><font size="6" color="Red"><a>@ViewData["ErrorUpPerfil"]</a></font></a>

@@ -1,6 +1,7 @@
 ﻿@using BootstrapSupport
 @model System.Collections.Generic.List<MiniDropbox.Domain.Account>
 
+
 @{
     ViewBag.Title = "MyContent";
     Layout = "~/Views/shared/_BootstrapLayout.basic.cshtml";
@@ -13,9 +14,12 @@
         <tr>
             @foreach (var property in Model[0].VisibleProperties())
             {
-                <th>
-                    @property.GetLabel().ToSeparatedWords()
-                </th>
+                if (property.GetLabel() != "Email" && property.GetLabel() != "Id" && property.GetLabel() != "Files" && property.GetLabel() != "TranUrl" && property.GetLabel() != "IsArchived" && property.GetLabel() != "Password")
+                {
+                    <th>
+                        @property.GetLabel().ToSeparatedWords()
+                    </th>
+                }
             }
             <th></th>
         </tr>
@@ -28,9 +32,12 @@
         <tr>
             @foreach (var property in model.VisibleProperties())
             {
-                <td>
-                    @Html.Display(index + "." + property.Name)
-                </td>                    
+                if (property.Name != "Email" && property.Name != "Id" && property.Name != "Files" && property.Name != "TranUrl" && property.Name != "IsArchived" && property.Name != "Password")
+                {
+                    <td>
+                        @Html.Display(index + "." + property.Name)
+                    </td>
+                }
             }
             <td>
                 <div class="btn-group">
@@ -42,10 +49,9 @@
                         @{
                             @Html.TryPartial("_actions", model)                            
                             var routevalues = model.GetIdValue();  
-                            <li>@Html.ActionLink("Edit", "Edit", routevalues)</li>
-                            <li>@Html.ActionLink("Details", "Details", routevalues)</li>
+                            <li>@Html.ActionLink("Cambiar Espacio Asignado", "Edit", routevalues)</li>
+                            <li>@Html.ActionLink("Bloquear cuenta", "BloquearCuenta", routevalues)</li>
                             <li class="divider"></li>
-                            <li>@Html.ActionLink("Delete", "Delete", routevalues)</li>
                                
                         }
                     </ul>
