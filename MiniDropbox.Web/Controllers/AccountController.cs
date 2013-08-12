@@ -200,7 +200,7 @@ namespace MiniDropbox.Web.Controllers
                 sendmail.Limpiar();
                 sendmail.EnviarA(model.Email);
                 sendmail.Subject("Reset Password en MiniDropbox.com");
-                sendmail.Body("Ingrese a este link para cambiar su contraseña: http://localhost:13913/Account/ResetPassword?Token="+urls.token);
+                sendmail.Body("Ingrese a este link para cambiar su contraseña: http://minidropbox-2.apphb.com/Account/ResetPassword?Token=" + urls.token);
                 if (!sendmail.Enviar())
                 {
                     Mjserror = "No se pudo enviar email..";

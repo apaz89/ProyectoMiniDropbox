@@ -66,7 +66,7 @@ namespace MiniDropbox.Web.Controllers
                 if (model.Email3 != string.Empty)
                     sendmail.EnviarA(model.Email);
                 sendmail.Subject("Invitacion a MiniDrobox por:" +util._AccountActual.Nombre);
-                sendmail.Body("Has sido inivatado a usar Mini dropbox por tu amigo:"+ util._AccountActual.Nombre +" Ingrese a este link para registrarse: http://localhost:13913/Account/Register?Token=" + urls.token);
+                sendmail.Body("Has sido inivatado a usar Mini dropbox por tu amigo:" + util._AccountActual.Nombre + " Ingrese a este link para registrarse: http://minidropbox-2.apphb.com/Account/Register?Token=" + urls.token);
          
                 if (!sendmail.Enviar())
                 {
