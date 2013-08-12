@@ -172,12 +172,15 @@
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
     <Compile Include="Clases\EnvioEmail.cs" />
     <Compile Include="Clases\Encrypt.cs" />
+    <Compile Include="Clases\Utilidades.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
     <Compile Include="Controllers\DiskController.cs" />
     <Compile Include="Controllers\ExampleLayoutsController.cs" />
+    <Compile Include="Controllers\FreeSpaceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ListAccountController.cs" />
+    <Compile Include="Controllers\PaquetesPremiumController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -190,7 +193,9 @@
     <Compile Include="Models\AccountLoginModel.cs" />
     <Compile Include="Models\DiskContentModel.cs" />
     <Compile Include="Models\HomeInputModel.cs" />
+    <Compile Include="Models\InviteFriendsModel.cs" />
     <Compile Include="Models\ListAccountModel.cs" />
+    <Compile Include="Models\PaquetesPremiumModel.cs" />
     <Compile Include="Models\ResetPasswordModel.cs" />
     <Compile Include="Models\UpdatePerfilModel.cs" />
     <Compile Include="NavigationRoutes\INavigationRouteFilter.cs" />
@@ -260,11 +265,17 @@
     <Content Include="Views\Disk\ListAllContent.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
-    <Content Include="Views\ListAccount\ListAccount.cshtml" />
+    <Content Include="Views\ListAccount\AllListAccount.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\UpdatePerfil.cshtml" />
     <Content Include="Views\Disk\ReadOnly.cshtml" />
     <Content Include="Views\ListAccount\AccountDetails.cshtml" />
+    <Content Include="Views\ListAccount\BloquearCuenta.cshtml" />
+    <Content Include="Views\FreeSpace\InviteFriends.cshtml" />
+    <Content Include="Views\PaquetesPremium\Paquetes.cshtml" />
+    <Content Include="Views\PaquetesPremium\PaquetesPremiunEdit.cshtml" />
+    <Content Include="Views\PaquetesPremium\DesactivarPaquetesPremiunEdit.cshtml" />
+    <Content Include="Views\PaquetesPremium\CreatePaquete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

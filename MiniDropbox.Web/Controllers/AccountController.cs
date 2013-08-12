@@ -18,6 +18,7 @@ namespace MiniDropbox.Web.Controllers
 {
     public class AccountController : BootstrapBaseController
     {
+        private Clases.Utilidades util = new Utilidades();
         private static string Mjserror;
         private EncryptString.Encrypt decode = new EncryptString.Encrypt();
         private Clases.EnvioEmail sendmail = new EnvioEmail();
@@ -45,7 +46,6 @@ namespace MiniDropbox.Web.Controllers
         public ActionResult LogIn(AccountLoginModel mode)
         {
             ///validar que el login es valido
-
             var account = _readOnlyRepository.GetAccountEmail(mode.Username);
             if (account == null)
             {
@@ -53,16 +53,24 @@ namespace MiniDropbox.Web.Controllers
             }
             else
             {
-                if (decode.decryptMe(account.Password) == mode.Password)
+                if (account.Estado)
                 {
-                    //ExampleLayoutsRouteConfig.NameHome = account.Nombre;
-                    Session["Iduser"] = account.Id;
-                    Session["Nombre"] = account.Nombre;
-                    return RedirectToAction("ListAllContent", "Disk");
+                    if (decode.decryptMe(account.Password) == mode.Password)
+                    {
+                        //ExampleLayoutsRouteConfig.NameHome = account.Nombre;
+                        Session["Iduser"] = account.Id;
+                        Session["Nombre"] = account.Nombre;
+                        util._AccountActual= account;
+                        return RedirectToAction("ListAllContent", "Disk");
+                    }
+                    else
+                    {
+                        Mjserror = "Contraseña Invalida";
+                    }
                 }
                 else
                 {
-                   Mjserror = "Contraseña Invalida";
+                    Mjserror = "Cuenta esta bloqueada";
                 }
             }
             return RedirectToAction("LogIn", "Account");
@@ -71,58 +79,99 @@ namespace MiniDropbox.Web.Controllers
         [HttpPost]
         public ActionResult Register(AccountInputModel model)
         {
-
             ////////valido si existe el usuario
-            if (model.Password != model.ConfirPassword)
+            try
             {
-                Mjserror = "";
-                return RedirectToAction("Register", "Account");
-            }
-
-            var sExiste = _readOnlyRepository.GetAccountEmail(model.Email);
-            if (sExiste == null)
-            {
-               raccAccount=new Account()
-                {
-                    Nombre = model.Nombre,
-                    Email = model.Email,
-                    Consumo = 0,
-                    Estado = true,
-                    EspacioAsignado = 2,
-                    Password = decode.encryptMe(model.Password),
-                    Tipo = "Estandar",
-                    Apellido = model.Apellido
-                };
                 _writeOnlyRepository.BeginTransaccion();
-                var register = _writeOnlyRepository.Create(raccAccount);
-                sendmail.Limpiar();
-                sendmail.EnviarA(model.Email);
-                sendmail.Subject("Register en MiniDropbox.com");
-                sendmail.Body("Te as registrado exitosamente en MiniDropbox.com, ahora podras tener tus archivos en la nuve,  empieza ya!");
-                if (!sendmail.Enviar())
+                if (model.Password != model.ConfirPassword)
                 {
-                    Mjserror = "No se pudo registrar..";
-                    _writeOnlyRepository.RollBackTransaccion();
+                    Mjserror = "";
                     return RedirectToAction("Register", "Account");
+                }
+
+                var sExiste = _readOnlyRepository.GetAccountEmail(model.Email);
+                if (sExiste == null)
+                {
+                    raccAccount = new Account()
+                    {
+                        Nombre = model.Nombre,
+                        Email = model.Email,
+                        Consumo = 0,
+                        Estado = true,
+                        EspacioAsignado = 2,
+                        Password = decode.encryptMe(model.Password),
+                        Tipo = "Estandar",
+                        Apellido = model.Apellido
+                    };
+                    var register = _writeOnlyRepository.Create(raccAccount);
+                    util._AccountActual = register;
+
+                    //verico si es una invitacion
+
+                    #region InvitacionFriend
+
+                    var tokentmp = (string) Session["TokenInvite"];
+
+                    if (tokentmp != null)
+                    {
+                        raccAccount = _readOnlyRepository.GetAccountwithToken(tokentmp);
+                        if (raccAccount != null)
+                        {
+                            raccAccount.EspacioAsignado = raccAccount.EspacioAsignado + 1;
+                            _writeOnlyRepository.Update<Account>(raccAccount);
+
+                            ////insertar en lista de usuarios referidos
+                            var refUsers = new ReferredUsersList
+                            {
+                                Account_Id_refered = register.Id,
+                                Account_id = raccAccount.Id
+                            };
+                            _writeOnlyRepository.Create(refUsers);
+                        }
+                    }
+
+                    #endregion
+
+                    sendmail.Limpiar();
+                    sendmail.EnviarA(model.Email);
+                    sendmail.Subject("Register en MiniDropbox.com");
+                    sendmail.Body(
+                        "Te as registrado exitosamente en MiniDropbox.com, ahora podras tener tus archivos en la nuve,  empieza ya!");
+                    if (!sendmail.Enviar())
+                    {
+                        Mjserror = "No se pudo registrar..";
+                        _writeOnlyRepository.RollBackTransaccion();
+                        return RedirectToAction("Register", "Account");
+                    }
+                    else
+                    {
+                        Session["Iduser"] = register.Id;
+                        _writeOnlyRepository.CommitTransaccion();
+                    }
                 }
                 else
                 {
-                    Session["Iduser"]=register.Id;
-                    _writeOnlyRepository.CommitTransaccion();
+                    Mjserror = "La cuenta ya existe..";
+                    _writeOnlyRepository.RollBackTransaccion();
+                    return RedirectToAction("Register", "Account");
                 }
             }
-            else
+            catch (Exception ee)
             {
-                Mjserror = "La cuenta ya existe..";
-                return RedirectToAction("Register", "Account");
+                _writeOnlyRepository.RollBackTransaccion();
+                Mjserror = ee.Message;
             }
 
             return RedirectToAction("ListAllContent", "Disk");
         }
 
         [HttpGet]
-        public ActionResult Register()
+        public ActionResult Register(string Token)
         {
+            if (Token != null)
+            {
+                Session["TokenInvite"] = Token;
+            }
             ViewData["ErrorReg"] = Mjserror;
             Mjserror = "";
             return View(new AccountInputModel());
@@ -218,15 +267,14 @@ namespace MiniDropbox.Web.Controllers
         {
             ViewData["ErrorUpPerfil"] = Mjserror;
             Mjserror = "";
-            
             UpdatePerfilModel model = new UpdatePerfilModel();
-            var _temp = _readOnlyRepository.GetById<Account>(Convert.ToInt64(Session["Iduser"].ToString()));
+            var _temp = _readOnlyRepository.GetById<Account>(util._AccountActual.Id);
             model.Nombre = _temp.Nombre;
             model.Email = _temp.Email;
             model.Consumo = _temp.Consumo;
             model.EspacioAsignado = _temp.EspacioAsignado;
-            model.Password = decode.encryptMe(_temp.Password);
-            model.ConfirPassword = decode.encryptMe(_temp.Password);
+            model.Password = decode.decryptMe(_temp.Password);
+            model.ConfirPassword = decode.decryptMe(_temp.Password);
             model.Apellido = _temp.Apellido;
             return View("UpdatePerfil", model);
         }
@@ -240,7 +288,7 @@ namespace MiniDropbox.Web.Controllers
             }
             else
             {
-                var _temp = _readOnlyRepository.GetById<Account>(Convert.ToInt64(Session["Iduser"].ToString()));
+                var _temp = _readOnlyRepository.GetById<Account>(util._AccountActual.Id);
                 _temp.Nombre = model.Nombre;
                 _temp.Apellido = model.Apellido;
                 _temp.Password = decode.encryptMe(model.Password);

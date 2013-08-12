@@ -1,7 +1,7 @@
 ﻿
 @using BootstrapSupport
-@model MiniDropbox.Web.Models.ListAccountModel
-@using (@Html.BeginForm("Edit", "ListAccount", FormMethod.Post, new { @class = "form-signin" }))
+@model MiniDropbox.Web.Models.PaquetesPremiumModel
+@using (@Html.BeginForm("Edit", "PaquetesPremium", FormMethod.Post, new { @class = "form-signin" }))
 {
     @Html.ValidationSummary(true)
     <fieldset class="form-horizontal">
@@ -18,11 +18,11 @@
         }
 		<div class="form-actions">
             <button type="submit" class="btn btn-primary">Save</button>
-            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn " })
+            @Html.ActionLink("Cancel", "Paquetes", null, new { @class = "btn " })
           </div>
     </fieldset>
 }
 <div>
     @*@Html.ActionLink("Home", "LogIn")*@
 </div>
-<a><font size="6" color="Red"><a>@ViewData["ErrorEditCuenta"]</a></font></a>
+<a><font size="6" color="Red"><a>@ViewData["ErrorPaqPremium"]</a></font></a>

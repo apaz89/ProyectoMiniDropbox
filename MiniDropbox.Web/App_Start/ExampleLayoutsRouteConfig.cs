@@ -17,11 +17,16 @@ namespace BootstrapMvcSample
         {
             routes.MapNavigationRoute<DiskController>("Home", c => c.ListAllContent());
 
+            routes.MapNavigationRoute<FreeSpaceController>("Free Space", c => c.Index())
+                .AddChildRoute<FreeSpaceController>("Invite Friends", c => c.InviteFriends());
+                //.AddChildRoute<FreeSpaceController>("up in class", c => c.UpInClass());
+
+
             routes.MapNavigationRoute<ListAccountController>("Opciones de Perfil", c => c.Index())
-                  .AddChildRoute<AccountController>("Perfil", c => c.UpdatePerfil())
-                  .AddChildRoute<ListAccountController>("Usered register", c => c.ListAccount())
-                  .AddChildRoute<AccountController>("Logout", c => c.LogIn())
-                ;
+                .AddChildRoute<AccountController>("Perfil", c => c.UpdatePerfil())
+                .AddChildRoute<ListAccountController>("Usered register", c => c.AllListAccount())
+                .AddChildRoute<PaquetesPremiumController>("Package Premium", c => c.Paquetes()).
+                AddChildRoute<AccountController>("Logout", c => c.LogIn());
         }
      }
 }

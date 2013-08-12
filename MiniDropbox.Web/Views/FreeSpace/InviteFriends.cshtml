@@ -1,11 +1,10 @@
-﻿
-@using BootstrapSupport
-@model MiniDropbox.Web.Models.ListAccountModel
-@using (@Html.BeginForm("Edit", "ListAccount", FormMethod.Post, new { @class = "form-signin" }))
+﻿@using BootstrapSupport
+@model MiniDropbox.Web.Models.InviteFriendsModel
+@using (@Html.BeginForm("InviteFriends", "FreeSpace", FormMethod.Post, new { @class = "form-signin" }))
 {
     @Html.ValidationSummary(true)
     <fieldset class="form-horizontal">
-        <legend>Cambiar valores de espacio asignado<small></small></legend>
+        <legend>Obtén mas espacio gratuito al invitar a tus amigos a Mini Dropbox.<small></small></legend>
         @foreach (var property in Model.VisibleProperties())
         {
             using(Html.ControlGroupFor(property.Name)){
@@ -17,12 +16,13 @@
             }
         }
 		<div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save</button>
-            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn " })
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            @Html.ActionLink("Cancel", "Home", null, new { @class = "btn " })
           </div>
     </fieldset>
 }
 <div>
     @*@Html.ActionLink("Home", "LogIn")*@
+    <a><font size="6" color="Red"><a>@ViewData["InviteFriend"]</a></font></a>
 </div>
-<a><font size="6" color="Red"><a>@ViewData["ErrorEditCuenta"]</a></font></a>
+

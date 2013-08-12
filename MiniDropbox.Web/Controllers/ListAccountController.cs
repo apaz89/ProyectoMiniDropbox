@@ -26,7 +26,7 @@ namespace MiniDropbox.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListAccount()
+        public ActionResult AllListAccount()
         {
             var listOfContent = _readOnlyRepository.AllItemsRead<Account>().ToList();
             return View(listOfContent);
@@ -34,14 +34,17 @@ namespace MiniDropbox.Web.Controllers
 
         public ActionResult Index()
         {
-            return RedirectToAction("ListAllContent", "Disk");
+            return RedirectToAction("AllListAccount", "ListAccount");
         }
 
         [HttpGet]
         public ActionResult Edit(long id)
         {
             ViewData["ErrorEditCuenta"] = Mjserror;
-            Session["IdEdit"] = id;
+            if (id != 0)
+            {
+                Session["IdEdit"] = id;
+            }
             Mjserror = "";
            
             ListAccountModel model = new ListAccountModel();
@@ -51,15 +54,16 @@ namespace MiniDropbox.Web.Controllers
             model.Consumo = _temp.Consumo;
             model.EspacioAsignado = _temp.EspacioAsignado;
             model.Apellido = _temp.Apellido;
+
             return View("AccountDetails", model);
         }
 
-        public string Mjserror { get; set; }
+        public static  string Mjserror { get; set; }
 
         [HttpPost]
         public ActionResult Edit(ListAccountModel model)
         {
-            if (model.Consumo < model.EspacioAsignado)
+            if (model.Consumo > model.EspacioAsignado)
             {
                 Mjserror = "El espacio asignado no puede ser menor que el consumo";
             }
@@ -77,7 +81,7 @@ namespace MiniDropbox.Web.Controllers
                         sendmail.Limpiar();
                         sendmail.EnviarA(raccAccount.Email);
                         sendmail.Subject("Se ha modificado su espacio");
-                        sendmail.Body(" Su espacio disponible en nuestro Mini DropBox es de:"+model.EspacioAsignado);
+                        sendmail.Body(" Su espacio disponible en nuestro Mini DropBox es de:"+model.EspacioAsignado +" Gb");
                         sendmail.Enviar();
                         _writeOnlyRepository.CommitTransaccion();
                     }
@@ -88,11 +92,33 @@ namespace MiniDropbox.Web.Controllers
                     }
                 }
             }
-            return View("AccountDetails", model);
+            return RedirectToAction("Edit", "ListAccount");
         }
 
+        [HttpGet]
+        public ActionResult BloquearCuenta(long id)
+        {
+            ViewData["ErrorEditCuenta"] = Mjserror;
+            if (id != 0)
+            {
+                Session["IdEdit"] = id;
+            }
+            Mjserror = "";
+
+            ListAccountModel model = new ListAccountModel();
+            var _temp = _readOnlyRepository.GetById<Account>(id);
+            model.Nombre = _temp.Nombre;
+            model.Email = _temp.Email;
+            model.Consumo = _temp.Consumo;
+            model.EspacioAsignado = _temp.EspacioAsignado;
+            model.Apellido = _temp.Apellido;
+
+            return View("BloquearCuenta", model);
+        }
+
+
         [HttpPost]
-        public ActionResult BloquearCuenta()
+        public ActionResult BloquearCuenta(ListAccountModel model)
         {
 
             var raccAccount = _readOnlyRepository.GetById<Account>((long)Session["IdEdit"]);
@@ -118,7 +144,7 @@ namespace MiniDropbox.Web.Controllers
                     }
                 }
 
-            return RedirectToAction("ListAccount");
+            return RedirectToAction("BloquearCuenta", "ListAccount");
         }
 
 

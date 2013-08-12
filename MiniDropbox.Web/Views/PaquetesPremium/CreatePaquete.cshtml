@@ -1,11 +1,11 @@
 ﻿
 @using BootstrapSupport
-@model MiniDropbox.Web.Models.ListAccountModel
-@using (@Html.BeginForm("Edit", "ListAccount", FormMethod.Post, new { @class = "form-signin" }))
+@model MiniDropbox.Web.Models.PaquetesPremiumModel
+@using (@Html.BeginForm("CreatePaquete", "PaquetesPremium", FormMethod.Post, new { @class = "form-signin" }))
 {
     @Html.ValidationSummary(true)
     <fieldset class="form-horizontal">
-        <legend>Cambiar valores de espacio asignado<small></small></legend>
+        <legend>Cree package para ofrecer a sus usuarios<small></small></legend>
         @foreach (var property in Model.VisibleProperties())
         {
             using(Html.ControlGroupFor(property.Name)){
@@ -17,12 +17,12 @@
             }
         }
 		<div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save</button>
-            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn " })
+            <button type="submit" class="btn btn-primary">Create Package</button>
+            @Html.ActionLink("Cancel", "Paquetes", null, new { @class = "btn " })
           </div>
     </fieldset>
 }
 <div>
     @*@Html.ActionLink("Home", "LogIn")*@
 </div>
-<a><font size="6" color="Red"><a>@ViewData["ErrorEditCuenta"]</a></font></a>
+<a><font size="6" color="Red"><a>@ViewData["ErrorPaqPremium"]</a></font></a>
