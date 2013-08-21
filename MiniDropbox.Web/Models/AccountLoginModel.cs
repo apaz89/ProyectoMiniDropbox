@@ -10,5 +10,6 @@ namespace MiniDropbox.Web.Models
         public string Username { get; set; }
         [Required(ErrorMessage = "Este campo no puede quedar vacio")]
         public string Password { get; set; }
+        public bool RememberMe { get; set; }
     }
 }

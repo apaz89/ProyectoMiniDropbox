@@ -7,7 +7,6 @@ using MiniDropbox.Domain;
 using MiniDropbox.Domain.Entities;
 using MiniDropbox.Domain.Services;
 using NHibernate;
-using NHibernate.Hql.Ast.ANTLR;
 using NHibernate.Linq;
 
 namespace MiniDropbox.Data

@@ -13,8 +13,8 @@ namespace MiniDropbox.Data
         {
             get
             {
-                AutoPersistenceModel autoPersistenceModel = AutoMap.Assemblies(typeof (IEntity).Assembly)
-                                                                   .Where(t => typeof (IEntity).IsAssignableFrom(t))
+                AutoPersistenceModel autoPersistenceModel = AutoMap.Assemblies(typeof(IEntity).Assembly)
+                                                                   .Where(t => typeof(IEntity).IsAssignableFrom(t))
                     // .UseOverridesFromAssemblyOf<AccountOverride>()
                                                                    .Conventions.Add(DefaultCascade.All());
 

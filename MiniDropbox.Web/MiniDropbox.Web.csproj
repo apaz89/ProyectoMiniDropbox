@@ -275,6 +275,7 @@
     <Content Include="Views\PaquetesPremium\PaquetesPremiunEdit.cshtml" />
     <Content Include="Views\PaquetesPremium\DesactivarPaquetesPremiunEdit.cshtml" />
     <Content Include="Views\PaquetesPremium\CreatePaquete.cshtml" />
+    <Content Include="Views\shared\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

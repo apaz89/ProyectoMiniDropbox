@@ -59,12 +59,12 @@ namespace MiniDropbox.Web.Controllers
                 var sTransUrl = _writeOnlyRepository.Create(urls);
                 sendmail.Limpiar();
                 sendmail.EnviarA(model.Email);
-                if (model.Email1 != string.Empty)
-                    sendmail.EnviarA(model.Email);
-                if (model.Email2 != string.Empty)
-                    sendmail.EnviarA(model.Email);
-                if (model.Email3 != string.Empty)
-                    sendmail.EnviarA(model.Email);
+                if (model.Email1 != "")
+                    sendmail.EnviarA(model.Email1);
+                if (model.Email2 != "")
+                    sendmail.EnviarA(model.Email2);
+                if (model.Email3 != "")
+                    sendmail.EnviarA(model.Email3);
                 sendmail.Subject("Invitacion a MiniDrobox por:" +util._AccountActual.Nombre);
                 sendmail.Body("Has sido inivatado a usar Mini dropbox por tu amigo:"+ util._AccountActual.Nombre +" Ingrese a este link para registrarse: http://localhost:13913/Account/Register?Token=" + urls.token);
          
@@ -81,7 +81,6 @@ namespace MiniDropbox.Web.Controllers
             }
             return RedirectToAction("InviteFriends","FreeSpace");
         }
-
 
         [HttpGet]
         public ActionResult Home()

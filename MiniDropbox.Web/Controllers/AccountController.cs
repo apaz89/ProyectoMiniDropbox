@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BootstrapMvcSample;
 using BootstrapMvcSample.Controllers;
+using AutoMapper;
 using BootstrapSupport;
 using FizzWare.NBuilder;
 using MiniDropbox.Domain;
@@ -36,8 +39,8 @@ namespace MiniDropbox.Web.Controllers
         [HttpGet]
         public ActionResult LogIn()
         {
-            ViewData["ErrorPass"] = Mjserror;
-            Mjserror = "";
+            //ViewData["ErrorPass"] = Mjserror;
+            //Mjserror = "";
             return View(new AccountLoginModel());    
             
         }
@@ -45,11 +48,11 @@ namespace MiniDropbox.Web.Controllers
         [HttpPost]
         public ActionResult LogIn(AccountLoginModel mode)
         {
-            ///validar que el login es valido
+            //validar que el login es valido
             var account = _readOnlyRepository.GetAccountEmail(mode.Username);
             if (account == null)
             {
-                Mjserror= "No existe el Usuario, vuelva a intentar de nuevo";
+                Error("No existe el Usuario, vuelva a intentar de nuevo");
             }
             else
             {
@@ -61,19 +64,22 @@ namespace MiniDropbox.Web.Controllers
                         Session["Iduser"] = account.Id;
                         Session["Nombre"] = account.Nombre;
                         util._AccountActual= account;
+                        List<string> roles = account.Roles.Select(x => x.Name).ToList();
+                        FormsAuthentication.SetAuthCookie(mode.Username, mode.RememberMe);
+                        SetAuthenticationCookie(mode.Username, roles);
                         return RedirectToAction("ListAllContent", "Disk");
                     }
                     else
                     {
-                        Mjserror = "Contraseña Invalida";
+                        Error("Contraseña Invalida");
                     }
                 }
                 else
                 {
-                    Mjserror = "Cuenta esta bloqueada";
+                    Error("Cuenta esta bloqueada");
                 }
             }
-            return RedirectToAction("LogIn", "Account");
+            return View(mode);
         }
 
         [HttpPost]
@@ -230,8 +236,7 @@ namespace MiniDropbox.Web.Controllers
             }
             return View(new ResetPasswordModel());
         }
-
-      
+        
         [HttpPost]
         public ActionResult ResetPassword(ResetPasswordModel model)
         {
@@ -307,8 +312,7 @@ namespace MiniDropbox.Web.Controllers
             }
             return RedirectToAction("UpdatePerfil", "Account");
         }
-
-
+        
         [HttpGet]
         public ActionResult Home()
         {

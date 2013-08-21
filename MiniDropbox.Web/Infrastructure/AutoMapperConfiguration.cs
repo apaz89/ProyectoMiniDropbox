@@ -12,6 +12,7 @@ namespace MiniDropbox.Web.Infrastructure
         {
             Mapper.CreateMap<AccountInputModel, Account>();
             Mapper.CreateMap<Account, AccountInputModel>();
+            
         }
     }
 }

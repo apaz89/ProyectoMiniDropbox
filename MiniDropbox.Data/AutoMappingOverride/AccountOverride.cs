@@ -18,3 +18,4 @@ namespace MiniDropbox.Data.AutoMappingOverride
         }
     }
 }
+
