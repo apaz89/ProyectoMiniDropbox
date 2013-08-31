@@ -1,0 +1,14 @@
+﻿@model dynamic
+@using BootstrapSupport
+
+@{
+    ViewBag.Title = "Pagina No existe";
+    Layout = "~/Views/shared/_BootstrapLayout.custumer.cshtml";
+}
+
+
+<h2>"Recurso No existe"</h2>
+
+<div class="form-actions">
+            @Html.ActionLink("Regresar","NoExiste", null, new { @class = "btn " })
+</div>

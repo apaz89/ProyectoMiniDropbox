@@ -17,7 +17,6 @@ namespace BootstrapMvcSample
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.MapNavigationRoute<DiskController>("Home", c => c.ListAllContent());
-
             routes.MapNavigationRoute<FreeSpaceController>("Free Space", c => c.Index())
                 .AddChildRoute<FreeSpaceController>("Invite Friends", c => c.InviteFriends());
                 //.AddChildRoute<FreeSpaceController>("up in class", c => c.UpInClass());

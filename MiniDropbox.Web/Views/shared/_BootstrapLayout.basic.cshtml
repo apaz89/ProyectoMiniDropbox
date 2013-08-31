@@ -24,7 +24,7 @@
                     <a class="brand" href="#" title="change in _bootstrapLayout.basic.cshtml">Mini DropBox</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            @Html.Navigation()
+                            @Html.Navigation(User.IsInRole("Admin"))
                         </ul>
                     </div>
                 </div>

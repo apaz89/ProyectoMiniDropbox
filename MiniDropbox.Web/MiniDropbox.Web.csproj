@@ -188,6 +188,7 @@
     <Compile Include="Infrastructure\DenyAnonymousAccessPolicyViolationHandler.cs" />
     <Compile Include="Infrastructure\FluentSecurityConfig.cs" />
     <Compile Include="Infrastructure\InitializeSimpleMembershipAttribute.cs" />
+    <Compile Include="Infrastructure\RequireRolePolicyViolationHandler.cs" />
     <Compile Include="Models\AccountForgotPasswordModel.cs" />
     <Compile Include="Models\AccountInputModel.cs" />
     <Compile Include="Models\AccountLoginModel.cs" />
@@ -339,6 +340,8 @@
     <Content Include="Views\PaquetesPremium\CreatePaquete.cshtml" />
     <Content Include="Views\shared\Index.cshtml" />
     <Content Include="Views\shared\_BootstrapLayout.custumer.cshtml" />
+    <Content Include="Views\ListAccount\NoExiste.cshtml" />
+    <Content Include="Views\PaquetesPremium\NoExiste.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -61,7 +61,7 @@
 
         <div class="masthead">
             <ul class="nav nav-pills pull-right">
-                @Html.Navigation()
+                @Html.Navigation(User.IsInRole("Admin"));
             </ul>
             <h3 class="muted">Mini Dropbox</h3>
         </div>

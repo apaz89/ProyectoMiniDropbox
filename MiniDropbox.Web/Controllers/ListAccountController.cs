@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using AutoMapper;
 using BootstrapMvcSample.Controllers;
 using MiniDropbox.Domain;
@@ -35,8 +36,21 @@ namespace MiniDropbox.Web.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
+            if (!User.IsInRole("Admin"))
+            {
+                return View("NoExiste");
+            }
+
             var listOfContent = _readOnlyRepository.AllItemsRead<Account>().ToList();
             return View(listOfContent);
+        }
+
+     
+    
+        public ActionResult NoExiste()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login", "Account");
         }
 
         public ActionResult Index()

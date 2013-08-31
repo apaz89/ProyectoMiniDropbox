@@ -67,7 +67,7 @@ namespace MiniDropbox.Web.Controllers
                     {
                         List<string> roles = account.Roles.Select(x => x.Name).ToList();
                         FormsAuthentication.SetAuthCookie(mode.Username, mode.RememberMe);
-                        SetAuthenticationCookie(mode.Username, new List<string>());
+                        SetAuthenticationCookie(mode.Username,roles);
                         return RedirectToAction("ListAllContent", "Disk");
                     }
                     else
@@ -192,13 +192,13 @@ namespace MiniDropbox.Web.Controllers
                 sendmail.Limpiar();
                 sendmail.EnviarA(model.Email);
                 sendmail.Subject("Reset Password en MiniDropbox.com");
-<<<<<<< HEAD
+
                 sendmail.Body(
                     "Ingrese a este link para cambiar su contraseña: http://localhost:13913/Account/ResetPassword?Token=" +
                     urls.token);
-=======
+
                 sendmail.Body("Ingrese a este link para cambiar su contraseña: http://minidropbox-2.apphb.com/Account/ResetPassword?Token=" + urls.token);
->>>>>>> 64aa0592b542314d195d123de788dde229a9f09c
+
                 if (!sendmail.Enviar())
                 {
                     Error("No se pudo enviar email..");

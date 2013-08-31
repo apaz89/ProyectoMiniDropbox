@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
+using NHibernate.Hql.Ast.ANTLR;
 
 namespace NavigationRoutes
 {
@@ -33,15 +34,36 @@ namespace NavigationRoutes
     public static class NavigationViewExtensions
     {
         
-        public static IHtmlString Navigation(this HtmlHelper helper)
+        public static IHtmlString Navigation(this HtmlHelper helper,bool admin)
         {
             return new CompositeMvcHtmlString(
-                GetRoutesForCurrentRequest(RouteTable.Routes,NavigationRoutes.Filters).Select(namedRoute => helper.NavigationListItemRouteLink(namedRoute)));
+            GetRoutesForCurrentRequest(RouteTable.Routes,NavigationRoutes.Filters,admin).Select(namedRoute => helper.NavigationListItemRouteLink(namedRoute)));
         }
 
-        public static IEnumerable<NamedRoute> GetRoutesForCurrentRequest(RouteCollection routes,IEnumerable<INavigationRouteFilter> routeFilters)
+        public static IEnumerable<NamedRoute> GetRoutesForCurrentRequest(RouteCollection routes,IEnumerable<INavigationRouteFilter> routeFilters, bool admin)
         {
-            var navigationRoutes = routes.OfType<NamedRoute>().Where(r=>r.IsChild==false).ToList();
+            var navigationRoutes = routes.OfType<NamedRoute>().Where(r => r.IsChild == false).ToList();
+
+            if (!admin)
+            {
+                foreach (var route in navigationRoutes.ToArray())
+                {
+                    if (route.DisplayName == "Opciones de Perfil")
+                    {
+                        foreach (var route2 in route.Children.ToArray())
+                        {
+                            if (route2.DisplayName == "Usuarios Registrados")
+                                navigationRoutes[2].Children.Remove(route2);
+
+                            if (route2.DisplayName == "Paquetes Premium")
+                                navigationRoutes[2].Children.Remove(route2);
+
+                        }
+                        break;
+                    }
+                }
+            }
+
             if (routeFilters.Count() > 0)
             {
                 foreach (var route in navigationRoutes.ToArray())
