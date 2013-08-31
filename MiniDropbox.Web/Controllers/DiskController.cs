@@ -13,8 +13,12 @@ namespace MiniDropbox.Web.Controllers
         [HttpGet]
         public ActionResult ListAllContent()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var listOfContent = Builder<DiskContentModel>.CreateListOfSize(15).Build().ToList(); 
             return View(listOfContent);
         }
-    }
+    }   
 }

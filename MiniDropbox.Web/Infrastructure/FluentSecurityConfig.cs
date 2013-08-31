@@ -6,6 +6,7 @@ using System.Web;
 using BootstrapMvcSample.Controllers;
 using FluentSecurity;
 using MiniDropbox.Web.Controllers;
+using MiniDropbox.Web.Models;
 
 namespace MiniDropbox.Web.Infrastructure
 {
@@ -16,10 +17,14 @@ namespace MiniDropbox.Web.Infrastructure
             SecurityConfigurator.Configure(configuration =>
             {
                 configuration.GetAuthenticationStatusFrom(() => HttpContext.Current.User.Identity.IsAuthenticated);
-
+                
                 configuration.ForAllControllers().DenyAnonymousAccess();
                 configuration.For<AccountController>(x => x.LogIn()).Ignore();
-                configuration.For<HomeController>(x => x.Create()).RequireRole(new object[] { "Admin" });
+                configuration.For<AccountController>(x => x.ForgotPassword()).Ignore();
+                configuration.For<AccountController>(x => x.ResetPassword(new ResetPasswordModel() )).Ignore();
+                configuration.For<AccountController>(x => x.Register(new AccountInputModel() )).Ignore();
+                configuration.For<AccountController>(x => x.UpdatePerfil()).DenyAnonymousAccess();
+                //configuration.For<HomeController>(x => x.Create()).RequireRole(new object[] { "Admin" });
                 configuration.ResolveServicesUsing(type =>
                 {
                     if (type == typeof(IPolicyViolationHandler))

@@ -26,9 +26,11 @@ namespace MiniDropbox.Web.Models
         public string ConfirPassword { get; set; }
         [Display(Name = "Consumo")]
         [ReadOnly(true)]
+        [Editable(false)]
         public long Consumo { get; set; }
         [Display(Name = "Espacio Asignado")]
         [ReadOnly(true)]
+        [Editable(false)]
         public long EspacioAsignado { get; set; }
     }
 }

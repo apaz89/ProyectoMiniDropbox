@@ -2,6 +2,7 @@
 using AutoMapper;
 using MiniDropbox.Domain;
 using MiniDropbox.Web.Models;
+using NHibernate.Hql.Ast.ANTLR;
 using Ninject.Modules;
 
 namespace MiniDropbox.Web.Infrastructure
@@ -12,7 +13,13 @@ namespace MiniDropbox.Web.Infrastructure
         {
             Mapper.CreateMap<AccountInputModel, Account>();
             Mapper.CreateMap<Account, AccountInputModel>();
-            
+            Mapper.CreateMap<Account, UpdatePerfilModel>();
+            Mapper.CreateMap<UpdatePerfilModel,Account>();
+            Mapper.CreateMap<ListAccountModel, Account>();
+            Mapper.CreateMap<Account, ListAccountModel>();
+            Mapper.CreateMap<PaquetesPremiumModel, PaquetesPremium>();
+            Mapper.CreateMap<PaquetesPremium, PaquetesPremiumModel>();
+        
         }
     }
 }

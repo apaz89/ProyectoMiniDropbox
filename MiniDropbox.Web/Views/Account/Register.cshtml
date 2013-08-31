@@ -1,6 +1,11 @@
 ﻿
 @using BootstrapSupport
 @model MiniDropbox.Web.Models.AccountInputModel
+
+@{
+    Layout = "~/Views/Shared/_BootstrapLayout.custumer.cshtml";
+}
+
 @using (@Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-signin" }))
 {
     @Html.ValidationSummary(true)

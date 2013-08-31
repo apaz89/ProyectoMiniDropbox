@@ -13,6 +13,10 @@ namespace BootstrapMvcSample.Controllers
         private static List<HomeInputModel> _models = ModelIntializer.CreateHomeInputModels();
         public ActionResult Index()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return RedirectToAction("ListAllContent", "Disk");
         }
 
@@ -32,6 +36,10 @@ namespace BootstrapMvcSample.Controllers
 
         public ActionResult Create()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View(new HomeInputModel());
         }
 
@@ -47,6 +55,11 @@ namespace BootstrapMvcSample.Controllers
         }
         public ActionResult Edit(int id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var model = _models.Get(id);
             return View("Create", model);
         }
@@ -66,6 +79,11 @@ namespace BootstrapMvcSample.Controllers
 
 		public ActionResult Details(int id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var model = _models.Get(id);
             return View(model);
         }

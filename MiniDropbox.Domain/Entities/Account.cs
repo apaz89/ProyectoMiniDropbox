@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MiniDropbox.Domain.Entities;
 
 namespace MiniDropbox.Domain
 {
@@ -29,7 +28,7 @@ namespace MiniDropbox.Domain
         public virtual long EspacioAsignado { get; set; } ////no debe ser mmenor que el consumo.
         public virtual string Tipo { get; set; }//administrador, cliente
         public virtual bool Estado { get; set; }
-        public readonly List<File> Files = new List<File>();
+        public virtual IList<File> Files { get; set; }
         public virtual string HashConfirmation { get; set; }
         public virtual bool IsConfirm { get; set; }
         

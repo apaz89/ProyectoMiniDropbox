@@ -21,14 +21,16 @@ namespace MiniDropbox.Web.Controllers
 {
     public class AccountController : BootstrapBaseController
     {
-        private Clases.Utilidades util = new Utilidades();
-        private static string Mjserror;
+
+        #region variables
+
         private EncryptString.Encrypt decode = new EncryptString.Encrypt();
         private Clases.EnvioEmail sendmail = new EnvioEmail();
-        TransaccionesUrl urls = new TransaccionesUrl();
-        private Account raccAccount = new Account();
+        private TransaccionesUrl urls = new TransaccionesUrl();
         private readonly IReadOnlyRepository _readOnlyRepository;
         private readonly IWriteOnlyRepository _writeOnlyRepository;
+
+        #endregion
 
         public AccountController(IReadOnlyRepository readOnlyRepository, IWriteOnlyRepository writeOnlyRepository)
         {
@@ -37,18 +39,21 @@ namespace MiniDropbox.Web.Controllers
         }
 
         [HttpGet]
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("LogIn");
+        }
+
+        [HttpGet]
         public ActionResult LogIn()
         {
-            //ViewData["ErrorPass"] = Mjserror;
-            //Mjserror = "";
-            return View(new AccountLoginModel());    
-            
+            return View(new AccountLoginModel());
         }
 
         [HttpPost]
         public ActionResult LogIn(AccountLoginModel mode)
         {
-            //validar que el login es valido
             var account = _readOnlyRepository.GetAccountEmail(mode.Username);
             if (account == null)
             {
@@ -60,13 +65,9 @@ namespace MiniDropbox.Web.Controllers
                 {
                     if (decode.decryptMe(account.Password) == mode.Password)
                     {
-                        //ExampleLayoutsRouteConfig.NameHome = account.Nombre;
-                        Session["Iduser"] = account.Id;
-                        Session["Nombre"] = account.Nombre;
-                        util._AccountActual= account;
                         List<string> roles = account.Roles.Select(x => x.Name).ToList();
                         FormsAuthentication.SetAuthCookie(mode.Username, mode.RememberMe);
-                        SetAuthenticationCookie(mode.Username, roles);
+                        SetAuthenticationCookie(mode.Username, new List<string>());
                         return RedirectToAction("ListAllContent", "Disk");
                     }
                     else
@@ -82,35 +83,34 @@ namespace MiniDropbox.Web.Controllers
             return View(mode);
         }
 
+        [HttpGet]
+        public ActionResult Register(string Token)
+        {
+            if (Token != null)
+            {
+                Session["TokenInvite"] = Token;
+            }
+            return View(new AccountInputModel());
+        }
+
         [HttpPost]
         public ActionResult Register(AccountInputModel model)
         {
             ////////valido si existe el usuario
             try
             {
-                _writeOnlyRepository.BeginTransaccion();
                 if (model.Password != model.ConfirPassword)
                 {
-                    Mjserror = "";
                     return RedirectToAction("Register", "Account");
                 }
 
                 var sExiste = _readOnlyRepository.GetAccountEmail(model.Email);
                 if (sExiste == null)
                 {
-                    raccAccount = new Account()
-                    {
-                        Nombre = model.Nombre,
-                        Email = model.Email,
-                        Consumo = 0,
-                        Estado = true,
-                        EspacioAsignado = 2,
-                        Password = decode.encryptMe(model.Password),
-                        Tipo = "Estandar",
-                        Apellido = model.Apellido
-                    };
-                    var register = _writeOnlyRepository.Create(raccAccount);
-                    util._AccountActual = register;
+                    var account = Mapper.Map<AccountInputModel, Account>(model);
+                    account.Password = decode.encryptMe(account.Password);
+                    account.Estado = true;
+                    var register = _writeOnlyRepository.Create(account);
 
                     //verico si es una invitacion
 
@@ -120,23 +120,27 @@ namespace MiniDropbox.Web.Controllers
 
                     if (tokentmp != null)
                     {
-                        raccAccount = _readOnlyRepository.GetAccountwithToken(tokentmp);
-                        if (raccAccount != null)
+                        account = _readOnlyRepository.GetAccountwithToken(tokentmp);
+                        if (account != null)
                         {
-                            raccAccount.EspacioAsignado = raccAccount.EspacioAsignado + 1;
-                            _writeOnlyRepository.Update<Account>(raccAccount);
+                            account.EspacioAsignado = account.EspacioAsignado + 1;
+                            _writeOnlyRepository.Update<Account>(account);
 
                             ////insertar en lista de usuarios referidos
                             var refUsers = new ReferredUsersList
                             {
                                 Account_Id_refered = register.Id,
-                                Account_id = raccAccount.Id
+                                Account_id = account.Id
                             };
                             _writeOnlyRepository.Create(refUsers);
                         }
                     }
 
                     #endregion
+
+                    //Envio un email
+
+                    #region sendemail
 
                     sendmail.Limpiar();
                     sendmail.EnviarA(model.Email);
@@ -145,49 +149,30 @@ namespace MiniDropbox.Web.Controllers
                         "Te as registrado exitosamente en MiniDropbox.com, ahora podras tener tus archivos en la nuve,  empieza ya!");
                     if (!sendmail.Enviar())
                     {
-                        Mjserror = "No se pudo registrar..";
+                        Error("No se pudo registrar..");
                         _writeOnlyRepository.RollBackTransaccion();
                         return RedirectToAction("Register", "Account");
                     }
-                    else
-                    {
-                        Session["Iduser"] = register.Id;
-                        _writeOnlyRepository.CommitTransaccion();
-                    }
+
+                    #endregion
                 }
                 else
                 {
-                    Mjserror = "La cuenta ya existe..";
-                    _writeOnlyRepository.RollBackTransaccion();
+                    Error("La cuenta ya existe..");
                     return RedirectToAction("Register", "Account");
                 }
             }
             catch (Exception ee)
             {
-                _writeOnlyRepository.RollBackTransaccion();
-                Mjserror = ee.Message;
+                Error(ee.Message);
             }
 
             return RedirectToAction("ListAllContent", "Disk");
         }
 
         [HttpGet]
-        public ActionResult Register(string Token)
-        {
-            if (Token != null)
-            {
-                Session["TokenInvite"] = Token;
-            }
-            ViewData["ErrorReg"] = Mjserror;
-            Mjserror = "";
-            return View(new AccountInputModel());
-        }
-        
-        [HttpGet]
         public ActionResult ForgotPassword()
         {
-            ViewData["ErrorForgot"] = Mjserror;
-            Mjserror = "";
             return View(new AccountForgotPasswordModel());
         }
 
@@ -202,25 +187,28 @@ namespace MiniDropbox.Web.Controllers
                 urls.token = System.Guid.NewGuid().ToString();
                 urls.type = "resetPass";
                 _writeOnlyRepository.BeginTransaccion();
+
                 var sTransUrl = _writeOnlyRepository.Create(urls);
                 sendmail.Limpiar();
                 sendmail.EnviarA(model.Email);
                 sendmail.Subject("Reset Password en MiniDropbox.com");
-                sendmail.Body("Ingrese a este link para cambiar su contraseña: http://localhost:13913/Account/ResetPassword?Token="+urls.token);
+                sendmail.Body(
+                    "Ingrese a este link para cambiar su contraseña: http://localhost:13913/Account/ResetPassword?Token=" +
+                    urls.token);
                 if (!sendmail.Enviar())
                 {
-                    Mjserror = "No se pudo enviar email..";
+                    Error("No se pudo enviar email..");
                     _writeOnlyRepository.RollBackTransaccion();
                 }
                 else
                 {
-                    Mjserror = "Se envio un correo con el link para cambiar su contraseña..";
+                    Information("Se envio un correo con el link para cambiar su contraseña..");
                     _writeOnlyRepository.CommitTransaccion();
                 }
             }
             else
             {
-                Mjserror = "Su email no esta registrado en nuestro sistema";
+                Error("Su email no esta registrado en nuestro sistema");
             }
             return RedirectToAction("ForgotPassword", "Account");
         }
@@ -228,95 +216,107 @@ namespace MiniDropbox.Web.Controllers
         [HttpGet]
         public ActionResult ResetPassword(string Token)
         {
-            ViewData["ErrorReset"] = Mjserror;
-            Mjserror = "";
             if (Token != null)
             {
                 Session["Token"] = Token;
             }
+            else
+            {
+                return RedirectToAction("LogIn");
+            }
             return View(new ResetPasswordModel());
         }
-        
+
         [HttpPost]
         public ActionResult ResetPassword(ResetPasswordModel model)
         {
             if (model.NuevoPassword != model.ConfirmePassword)
             {
-                Mjserror = "La confirmacion de la contraseña no es igual";
+                Error("La confirmacion de la contraseña no es igual");
             }
             else
             {
-                raccAccount = _readOnlyRepository.GetAccountwithToken(Session["Token"].ToString());
+                var raccAccount = _readOnlyRepository.GetAccountwithToken(Session["Token"].ToString());
                 if (raccAccount != null)
                 {
                     raccAccount.Password = decode.encryptMe(model.NuevoPassword);
                     try
                     {
-                        _writeOnlyRepository.BeginTransaccion();
                         _writeOnlyRepository.Update<Account>(raccAccount);
-                        _writeOnlyRepository.CommitTransaccion();
-                        Mjserror = "Contraseña cambiada correctamente, proceda a ingresar";
+                        Success("Contraseña cambiada correctamente, proceda a ingresar");
                     }
                     catch (Exception ee)
                     {
-                        _writeOnlyRepository.RollBackTransaccion();
-                        Mjserror = ee.Message;
+                        Error(ee.Message);
                     }
                 }
+                else
+                {
+                    Error("No exite enlace, para cambiar su contraseña");
+                }
             }
-            return RedirectToAction("ResetPassword","Account");
+            return RedirectToAction("ResetPassword", "Account");
         }
-        
+
         [HttpGet]
         public ActionResult UpdatePerfil()
         {
-            ViewData["ErrorUpPerfil"] = Mjserror;
-            Mjserror = "";
-            UpdatePerfilModel model = new UpdatePerfilModel();
-            var _temp = _readOnlyRepository.GetById<Account>(util._AccountActual.Id);
-            model.Nombre = _temp.Nombre;
-            model.Email = _temp.Email;
-            model.Consumo = _temp.Consumo;
-            model.EspacioAsignado = _temp.EspacioAsignado;
-            model.Password = decode.decryptMe(_temp.Password);
-            model.ConfirPassword = decode.decryptMe(_temp.Password);
-            model.Apellido = _temp.Apellido;
-            return View("UpdatePerfil", model);
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var model = new UpdatePerfilModel();
+                var temp = _readOnlyRepository.First<Account>(x => x.Email == User.Identity.Name);
+                Mapper.Map<Account, UpdatePerfilModel>(temp, model);
+                model.Password = decode.decryptMe(temp.Password);
+                model.ConfirPassword = model.Password;
+                return View("UpdatePerfil", model);
+            }
+            else
+            {
+                return RedirectToAction("LogIn");
+            }
         }
 
         [HttpPost]
         public ActionResult UpdatePerfil(UpdatePerfilModel model)
         {
-            if (model.ConfirPassword != model.Password)
+            try
             {
-                Mjserror = "La confirmacion de la contraseña no es igual";
-            }
-            else
-            {
-                var _temp = _readOnlyRepository.GetById<Account>(util._AccountActual.Id);
-                _temp.Nombre = model.Nombre;
-                _temp.Apellido = model.Apellido;
-                _temp.Password = decode.encryptMe(model.Password);
-                try
+                if (model.ConfirPassword != model.Password)
                 {
-                    _writeOnlyRepository.BeginTransaccion();
-                    _writeOnlyRepository.Update<Account>(_temp);
-                    _writeOnlyRepository.CommitTransaccion();
-                    Mjserror = "Cambios salvados correctamente";
+                    Error("La confirmacion de la contraseña no es igual");
                 }
-                catch (Exception ee)
+                else
                 {
-                    _writeOnlyRepository.RollBackTransaccion();
-                    Mjserror = ee.Message;
+                    var temp = _readOnlyRepository.First<Account>(x => x.Email == User.Identity.Name);
+                    Mapper.Map<UpdatePerfilModel, Account>(model, temp);
+                    temp.Password = decode.encryptMe(model.Password);
+                    _writeOnlyRepository.Update<Account>(temp);
+                    Success("Cambios salvados correctamente");
                 }
             }
+            catch (Exception ee)
+            {
+                Error(ee.Message);
+            }
+
             return RedirectToAction("UpdatePerfil", "Account");
         }
-        
+
         [HttpGet]
         public ActionResult Home()
         {
-            return RedirectToAction("ListAllContent", "Disk");
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("login");
+            }
+            else
+            {
+                return RedirectToAction("ListAllContent", "Disk");
+            }
         }
+
     }
 }
+
+                                                                               
