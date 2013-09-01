@@ -43,7 +43,7 @@ namespace MiniDropbox.Domain.Entities
         public virtual long Id { get; set; }
         public virtual bool IsArchived { get; set; }
 
-        public void AddFolder(Folder folder)
+        public virtual void AddFolder(Folder folder)
         {
             if (!_folders.Contains(folder))
             {
@@ -51,7 +51,7 @@ namespace MiniDropbox.Domain.Entities
             }
         }
 
-        public void AddFile(File file)
+        public virtual void AddFile(File file)
         {
             if (!_files.Contains(file))
             {

@@ -6,20 +6,20 @@
     Layout = "~/Views/shared/_BootstrapLayout.narrow.cshtml";
 }
 
-<h4><small></small></h4>
+<h4><small>@ViewData["Nombre"].ToString()</small></h4>
 <table class="table table-striped">
     <caption></caption>
     <thead>
         <tr>
-              @if (Model.Count > 0)
-              {
-                  foreach (var property in Model[0].VisibleProperties())
-                   {
-                       <th>
-                           @property.GetLabel().ToSeparatedWords()
-                       </th>
-                   }
-              }
+            @if (Model.Count > 0)
+            {
+                foreach (var property in Model[0].VisibleProperties())
+                 {
+                     <th>
+                         @property.GetLabel().ToSeparatedWords()
+                     </th>
+                 }
+            }
             <th>@Html.ActionLink("Cargar", "SubirArchivo", "Disk", new { @class = "btn btn-mini btn-success" })
                 @Html.ActionLink("N.Fold", "NuevoDirectorio", "Disk", new { @class = "btn btn-mini btn-success" })</th>   
             <th></th>

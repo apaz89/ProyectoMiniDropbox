@@ -11,6 +11,10 @@ namespace MiniDropbox.Domain.Entities
         private readonly string _folderName;
         private readonly IList<Folder> _subfolders = new List<Folder>();
 
+        public virtual long Drive_Id { get; set; }
+
+        public virtual long Folder_Id { get; set; }
+
         public Folder(string folderName)
         {
             _folderName = folderName;
@@ -28,6 +32,8 @@ namespace MiniDropbox.Domain.Entities
         {
             get { return _folderName; }
         }
+
+        public virtual string Url{ get; set; }
 
         public virtual IEnumerable<Folder> Subfolders
         {

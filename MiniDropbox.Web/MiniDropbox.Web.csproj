@@ -170,6 +170,7 @@
     <Compile Include="BootstrapSupport\HtmlHelpers\GlyphIcons.cs" />
     <Compile Include="BootstrapSupport\HtmlHelpers\Paging.cs" />
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
+    <Compile Include="Clases\DirectoriosArchivos.cs" />
     <Compile Include="Clases\EnvioEmail.cs" />
     <Compile Include="Clases\Encrypt.cs" />
     <Compile Include="Clases\Utilidades.cs" />
@@ -193,11 +194,14 @@
     <Compile Include="Models\AccountInputModel.cs" />
     <Compile Include="Models\AccountLoginModel.cs" />
     <Compile Include="Models\DiskContentModel.cs" />
+    <Compile Include="Models\FileModel.cs" />
+    <Compile Include="Models\FolderModel.cs" />
     <Compile Include="Models\HomeInputModel.cs" />
     <Compile Include="Models\InviteFriendsModel.cs" />
     <Compile Include="Models\ListAccountModel.cs" />
     <Compile Include="Models\PaquetesPremiumModel.cs" />
     <Compile Include="Models\ResetPasswordModel.cs" />
+    <Compile Include="Models\SubirArchivoModel.cs" />
     <Compile Include="Models\UpdatePerfilModel.cs" />
     <Compile Include="NavigationRoutes\INavigationRouteFilter.cs" />
     <Compile Include="NavigationRoutes\NamedRoute.cs" />
@@ -342,9 +346,13 @@
     <Content Include="Views\shared\_BootstrapLayout.custumer.cshtml" />
     <Content Include="Views\ListAccount\NoExiste.cshtml" />
     <Content Include="Views\PaquetesPremium\NoExiste.cshtml" />
+    <Content Include="Views\Disk\SubirArchivo.cshtml" />
+    <Content Include="Views\Disk\NuevoDirectorio.cshtml" />
+    <Content Include="Views\Disk\Ver.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Directorios\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

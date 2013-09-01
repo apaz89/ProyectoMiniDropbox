@@ -1,0 +1,21 @@
+﻿@using BootstrapSupport
+@model MiniDropbox.Web.Models.DiskContentModel
+@{
+    ViewBag.Title = "MyContent";
+    Layout = "~/Views/shared/_BootstrapLayout.custumer.cshtml";
+}
+
+@{
+    ViewBag.Title = "Cargar a 'Mini Dropbox'";
+}
+
+
+<h2>Cargar a 'Dropbox'</h2>
+
+<form  enctype="multipart/form-data" method="post">
+    <input type="file" name="fichero" />
+    <button class="btn btn-small btn-success" type="submit">Cargar</button>
+    <br />
+    <br /> 
+    @Html.ActionLink("Listo", "ListAllContent", "Disk", new { @class = "btn btn-small btn-success" })
+</form>

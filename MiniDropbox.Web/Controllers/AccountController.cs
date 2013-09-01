@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -112,6 +113,21 @@ namespace MiniDropbox.Web.Controllers
                     account.Estado = true;
                     var register = _writeOnlyRepository.Create(account);
 
+                    List<string> roles = account.Roles.Select(x => x.Name).ToList();
+                    FormsAuthentication.SetAuthCookie(model.Email, false);
+                    SetAuthenticationCookie(model.Email, roles);
+
+                    var drive = new Drive(User.Identity.Name);
+                    var Cdrive = _writeOnlyRepository.Create(drive);
+
+                    var folder = new Folder(account.Id.ToString(CultureInfo.InvariantCulture));
+                    folder.IsArchived = false;
+                    folder.Drive_Id = Cdrive.Id;
+                    folder.Url = Server.MapPath("~/Directorios") + @"\" + account.Id.ToString(CultureInfo.InvariantCulture);
+                    _writeOnlyRepository.Create(folder);
+
+                    var DirArch = new DirectoriosArchivos(Server.MapPath("~/Directorios") + @"\" + account.Id.ToString(CultureInfo.InvariantCulture));
+
                     //verico si es una invitacion
 
                     #region InvitacionFriend
@@ -150,7 +166,6 @@ namespace MiniDropbox.Web.Controllers
                     if (!sendmail.Enviar())
                     {
                         Error("No se pudo registrar..");
-                        _writeOnlyRepository.RollBackTransaccion();
                         return RedirectToAction("Register", "Account");
                     }
 
