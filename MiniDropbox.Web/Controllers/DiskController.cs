@@ -134,7 +134,7 @@ namespace MiniDropbox.Web.Controllers
                                 {
                                     Nombre = fin.Name,
                                     Tamanio = fichero.ContentLength,
-                                    Url = fin.FullName,
+                                    Url = DirArch.PathActual + @"\" + fichero.FileName,
                                     Tipo = fin.Extension,
                                     IsArchived = false,
                                     FechaModifico = DateTime.Now,
@@ -293,6 +293,22 @@ namespace MiniDropbox.Web.Controllers
             return RedirectToAction("ListAllContent");
         }
 
+        [HttpGet]
+        public ActionResult Buscar()
+        {
+            var listofconten = _readOnlyRepository.Query<File>(x => x.Nombre == "").ToList();
+            if (Session["Buscar"] != null)
+            {
+                listofconten = _readOnlyRepository.Query<File>(x => x.Nombre.Contains(Session["Buscar"].ToString())).ToList();
+            }
+            return View(listofconten);
+        }
 
+        [HttpPost]
+        public ActionResult Buscar(string descripcion)
+        {
+            Session["Buscar"] = descripcion;
+            return RedirectToAction("Buscar");
+        }
     }
 }

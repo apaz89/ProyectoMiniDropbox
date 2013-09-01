@@ -193,6 +193,7 @@
     <Compile Include="Models\AccountForgotPasswordModel.cs" />
     <Compile Include="Models\AccountInputModel.cs" />
     <Compile Include="Models\AccountLoginModel.cs" />
+    <Compile Include="Models\BuscarModel.cs" />
     <Compile Include="Models\DiskContentModel.cs" />
     <Compile Include="Models\FileModel.cs" />
     <Compile Include="Models\FolderModel.cs" />
@@ -349,6 +350,7 @@
     <Content Include="Views\Disk\SubirArchivo.cshtml" />
     <Content Include="Views\Disk\NuevoDirectorio.cshtml" />
     <Content Include="Views\Disk\Ver.cshtml" />
+    <Content Include="Views\Disk\Buscar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

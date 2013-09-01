@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Buscar Archivo";
+    Layout = "~/Views/shared/_BootstrapLayout.narrow.cshtml";
+}
+
+@using BootstrapSupport
+
+<form  enctype="multipart/form-data" method="post">
+    <br />
+    <label for="descripcion">Descripción del fichero:</label>
+    <input type="text" id="descripcion" name="descripcion" /><input type="submit" value="Buscar" />
+    <br />
+    <br />
+</form>
+
+
+@model List<MiniDropbox.Domain.File>
+
+@{
+    ViewBag.Title = "MyContent";
+    Layout = "~/Views/shared/_BootstrapLayout.basic.cshtml";
+}
+
+<h4>Resultados <small></small></h4>
+<table class="table table-striped">
+    <caption></caption>
+    <thead>
+        <tr>
+            @if (Model.Count>0)
+            {
+                if (Model != null)
+                {
+                    foreach (var property in Model[0].VisibleProperties())
+                    {
+                        if (property.Name != "FechaModifco" && property.Name != "Tamanio" && property.Name != "IsArchived" && property.Name != "Account_id" && property.Name != "Drive_id" && property.Name != "Folder_id")
+                        {
+                            <th>
+                                @property.GetLabel().ToSeparatedWords()
+                            </th>
+
+                        }
+
+                    }
+                }
+            }
+            <th></th>
+        </tr>
+    </thead>
+    @{ int index = 0; }
+     @if (Model != null)
+     {
+         foreach (var model in Model)
+          {
+              ViewData[index.ToString()] = model;
+              <tr>
+                  @foreach (var property in model.VisibleProperties())
+                  {
+                      if (property.Name != "FechaModifco" && property.Name != "Tamanio" && property.Name != "IsArchived" && property.Name != "Account_id" && property.Name != "Drive_id" && property.Name != "Folder_id")
+                      {
+
+                          <td>
+                              @Html.Display(index + "." + property.Name)
+                          </td>
+                      }
+
+                  }
+                  <td>
+                      <div class="btn-group">
+                          @*<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                              Action
+                              <span class="caret"></span>
+                          </a>*@
+                          @*  <ul class="dropdown-menu">
+                        @{
+                            @Html.TryPartial("_actions", model)                            
+                            var routevalues = model.GetIdValue();  
+                            <li>@Html.ActionLink("Edit", "Edit", routevalues)</li>
+                            <li>@Html.ActionLink("Desactivar Paquete", "DesactivarPaquete", routevalues)</li>
+                            <li class="divider"></li>
+                               
+                        }
+                    </ul>*@
+                      </div>
+
+                  </td>
+              </tr>
+              index++;
+          }
+
+     }
+
+</table>
