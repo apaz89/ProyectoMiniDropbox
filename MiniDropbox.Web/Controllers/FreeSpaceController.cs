@@ -62,7 +62,7 @@ namespace MiniDropbox.Web.Controllers
                 urls.type = "invitedFriend";
 
                 #region EnviarMail
-                _writeOnlyRepository.BeginTransaccion();
+
                 var sTransUrl = _writeOnlyRepository.Create(urls);
                 
                 sendmail.Limpiar();
@@ -80,7 +80,6 @@ namespace MiniDropbox.Web.Controllers
                  if (!sendmail.Enviar())
                 {
                     Error( "No se pudo enviar email..");
-                    _writeOnlyRepository.RollBackTransaccion();
                 }
                 else
                 {

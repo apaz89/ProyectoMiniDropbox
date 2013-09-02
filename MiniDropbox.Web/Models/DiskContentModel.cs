@@ -9,6 +9,9 @@ namespace MiniDropbox.Web.Models
         public string Name { get; set; }
         public string Type { get; set; }
         public DateTime ModifiedDate { get; set; }
-
+        public bool IsCompartido { get; set; }
+        public string Compartido_por { get; set; }
+        
     }
+
 }

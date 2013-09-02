@@ -3,7 +3,7 @@
 
 @{
     ViewBag.Title = "MyContent";
-    Layout = "~/Views/shared/_BootstrapLayout.narrow.cshtml";
+    Layout = "~/Views/shared/_BootstrapLayout.basic.cshtml";
 }
 
 <h4><small></small></h4>
@@ -47,20 +47,38 @@
                     <ul class="dropdown-menu">
                         @{
                             @Html.TryPartial("_actions", model)                            
-                            var routevalues = model.GetIdValue();  
+                            var routevalues = model.GetIdValue();
                             if (model.IsFolder)
-                             {
-                                 <li>@Html.ActionLink("Ver", "Ver", routevalues)</li>
-                                 <li>@Html.ActionLink("Compartir", "Details", routevalues)</li>
-                                 <li class="divider"></li>
-                                 <li>@Html.ActionLink("Eliminar", "Delete", routevalues)</li>
-                             }
-                             else
-                             {
-                                 <li class="divider"></li>
-                                 <li>@Html.ActionLink("Eliminar", "Delete", routevalues)</li>
-                             }
-
+                            {
+                                <li>@Html.ActionLink("Ver", "Ver", routevalues)</li>
+                                if (model.Name != "Shared")
+                                {
+                                    if (model.IsCompartido)
+                                    {
+                                        <li>@Html.ActionLink("Dejar de Compartir", "DejarCompartir", routevalues)</li>
+                                    }
+                                    else
+                                    {
+                                        <li>@Html.ActionLink("Compartir Publica", "Compartir", routevalues)</li>
+                                    }
+                                    <li class="divider"></li>
+                                    <li>@Html.ActionLink("Eliminar", "Delete", routevalues)</li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="divider"></li>
+                                if (!model.IsCompartido)
+                                {
+                                    <li>@Html.ActionLink("Compartir", "CompartirArchivo", routevalues)</li>
+                                    <li>@Html.ActionLink("Eliminar", "Delete", routevalues)</li>
+                                }
+                                else
+                                {
+                                     <li>@Html.ActionLink("Dejar Compartir", "DejarCompartirArchivo", routevalues)</li>
+                                }
+                                
+                            }
                         }
                     </ul>
                 </div>

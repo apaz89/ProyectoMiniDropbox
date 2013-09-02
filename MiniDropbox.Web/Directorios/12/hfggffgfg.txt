@@ -1,0 +1,7 @@
+               
+                        ////eliminar cookie.
+                        //User.Identity.Name;
+                        //User.IsInRole("dd");
+                        //User.Identity.IsAuthenticated;
+                        //FormsAuthentication.SignOut();
+         

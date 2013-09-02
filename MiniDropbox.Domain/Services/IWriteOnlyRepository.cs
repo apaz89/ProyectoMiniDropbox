@@ -5,8 +5,8 @@
         T Create<T>(T itemToCreate) where T : class, IEntity;
         T Update<T>(T itemToUpdate) where T : class, IEntity;
         void Archive<T>(T itemToArchive);
-        void BeginTransaccion();
-        void RollBackTransaccion();
-        void CommitTransaccion();
+        //void BeginTransaccion();
+        //void RollBackTransaccion();
+        //void CommitTransaccion();
     }
 }   

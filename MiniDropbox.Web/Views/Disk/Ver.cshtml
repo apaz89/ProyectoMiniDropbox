@@ -3,10 +3,10 @@
 
 @{
     ViewBag.Title = "MyContent";
-    Layout = "~/Views/shared/_BootstrapLayout.narrow.cshtml";
+    Layout = "~/Views/shared/_BootstrapLayout.basic.cshtml";
 }
 
-<h4><small>@ViewData["Nombre"].ToString()</small></h4>
+<h4> <legend ><small>@ViewData["Nombre"].ToString()</small> </legen></h4>
 <table class="table table-striped">
     <caption></caption>
     <thead>
@@ -20,9 +20,12 @@
                      </th>
                  }
             }
-            <th>@Html.ActionLink("Cargar", "SubirArchivo", "Disk", new { @class = "btn btn-mini btn-success" })
-                @Html.ActionLink("N.Fold", "NuevoDirectorio", "Disk", new { @class = "btn btn-mini btn-success" })</th>   
-            <th></th>
+            @if (ViewData["Nombre"].ToString()!="Shared")
+            {
+                <th>@Html.ActionLink("Cargar", "SubirArchivo", "Disk", new {@class = "btn btn-mini btn-success"})
+                    @Html.ActionLink("N.Fold", "NuevoDirectorio", "Disk", new {@class = "btn btn-mini btn-success"})</th>
+                <th></th>
+            }
         </tr>
     </thead>
     @{ int index = 0; }
@@ -45,19 +48,39 @@
                     <ul class="dropdown-menu">
                         @{
                             @Html.TryPartial("_actions", model)                            
-                            var routevalues = model.GetIdValue();  
+                            var routevalues = model.GetIdValue();
                             if (model.IsFolder)
-                             {
-                                 <li>@Html.ActionLink("Ver", "Ver", routevalues)</li>
-                                 <li>@Html.ActionLink("Compartir", "Details", routevalues)</li>
-                                 <li class="divider"></li>
-                                 <li>@Html.ActionLink("Eliminar", "Delete", routevalues)</li>
-                             }
-                             else
-                             {
-                                 <li class="divider"></li>
-                                 <li>@Html.ActionLink("Eliminar", "Delete", routevalues)</li>
-                             }
+                            {
+                                if (!model.IsCompartido)
+                                     {
+                                         <li>@Html.ActionLink("Dejar de Compartir", "DejarCompartir", routevalues)</li>
+                                     }
+                                     else
+                                     {
+                                         <li>@Html.ActionLink("Compartir Publica", "Compartir", routevalues)</li>
+                                     }
+                                <li class="divider"></li>
+                                if (!model.IsCompartido)
+                                {
+                                    <li>@Html.ActionLink("Eliminar", "Delete", routevalues)</li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="divider"></li>
+                                if (ViewData["Nombre"].ToString() != "Shared")
+                                {
+                                    if (!model.IsCompartido)
+                                    {
+                                        <li>@Html.ActionLink("Compartir", "CompartirArchivo", routevalues)</li>
+                                        <li>@Html.ActionLink("Eliminar", "Delete", routevalues)</li>
+                                    }
+                                    else
+                                    {
+                                        <li>@Html.ActionLink("Dejar Compartir", "DejarCompartirArchivo", routevalues)</li>
+                                    }
+                                }
+                            }
 
                         }
                     </ul>

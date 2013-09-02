@@ -33,20 +33,20 @@ namespace MiniDropbox.Data
             throw new NotImplementedException();
         }
 
-        public void BeginTransaccion()
-        {
-            _session.Transaction.Begin(IsolationLevel.Serializable);
-        }
+        //public void BeginTransaccion()
+        //{
+        //    _session.Transaction.Begin(IsolationLevel.Serializable);
+        //}
 
-        public void CommitTransaccion()
-        {
-            _session.Transaction.Commit();
-        }
+        //public void CommitTransaccion()
+        //{
+        //    _session.Transaction.Commit();
+        //}
 
-        public void RollBackTransaccion()
-        {
-            _session.Transaction.Rollback();
-        }
+        //public void RollBackTransaccion()
+        //{
+        //    _session.Transaction.Rollback();
+        //}
 
 
 

@@ -40,11 +40,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\ArchivosCompartidos.cs" />
     <Compile Include="Entities\Drive.cs" />
     <Compile Include="Entities\File.cs" />
     <Compile Include="Entities\Folder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Entities\FolderPublico.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\PaquetesPremium.cs" />
     <Compile Include="Entities\ReferredUsersList.cs" />

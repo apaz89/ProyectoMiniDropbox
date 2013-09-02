@@ -117,16 +117,39 @@ namespace MiniDropbox.Web.Controllers
                     FormsAuthentication.SetAuthCookie(model.Email, false);
                     SetAuthenticationCookie(model.Email, roles);
 
-                    var drive = new Drive(User.Identity.Name);
-                    var Cdrive = _writeOnlyRepository.Create(drive);
+
+                    #region folderIniciales
+
+                    var drive = new Drive(register.Email);
+                    var cdrive = _writeOnlyRepository.Create(drive);
+
 
                     var folder = new Folder(account.Id.ToString(CultureInfo.InvariantCulture));
                     folder.IsArchived = false;
-                    folder.Drive_Id = Cdrive.Id;
-                    folder.Url = Server.MapPath("~/Directorios") + @"\" + account.Id.ToString(CultureInfo.InvariantCulture);
-                    _writeOnlyRepository.Create(folder);
+                    folder.Url = Server.MapPath("~/Directorios") + @"\" +
+                                 account.Id.ToString(CultureInfo.InvariantCulture);
+                    folder.IsCompartido = false;
+                    folder.Drive_Id = drive.Id;
+                    folder.Folder_Id = null;
+                    var cfolder = _writeOnlyRepository.Create(folder);
+                    
+                    var subfolder = new Folder("Shared");
+                    subfolder.IsArchived = false;
+                    subfolder.Url = Server.MapPath("~/Directorios") + @"\" +
+                                    account.Id.ToString(CultureInfo.InvariantCulture) + @"\" + "Shared";
+                    subfolder.IsCompartido = false;
+                    subfolder.Drive_Id = cdrive.Id;
+                    subfolder.Folder_Id = cfolder.Id;
 
-                    var DirArch = new DirectoriosArchivos(Server.MapPath("~/Directorios") + @"\" + account.Id.ToString(CultureInfo.InvariantCulture));
+                    _writeOnlyRepository.Create(subfolder);
+
+
+                    new DirectoriosArchivos(Server.MapPath("~/Directorios") + @"\" +
+                                            account.Id.ToString(CultureInfo.InvariantCulture));
+                    new DirectoriosArchivos(Server.MapPath("~/Directorios") + @"\" +
+                                            account.Id.ToString(CultureInfo.InvariantCulture) + @"\" + "Shared");
+
+                    #endregion
 
                     //verico si es una invitacion
 
@@ -201,7 +224,6 @@ namespace MiniDropbox.Web.Controllers
                 urls.IsArchived = sExiste.IsArchived;
                 urls.token = System.Guid.NewGuid().ToString();
                 urls.type = "resetPass";
-                _writeOnlyRepository.BeginTransaccion();
 
                 var sTransUrl = _writeOnlyRepository.Create(urls);
                 sendmail.Limpiar();
@@ -212,17 +234,13 @@ namespace MiniDropbox.Web.Controllers
                     "Ingrese a este link para cambiar su contraseña: http://localhost:13913/Account/ResetPassword?Token=" +
                     urls.token);
 
-                sendmail.Body("Ingrese a este link para cambiar su contraseña: http://minidropbox-2.apphb.com/Account/ResetPassword?Token=" + urls.token);
-
                 if (!sendmail.Enviar())
                 {
                     Error("No se pudo enviar email..");
-                    _writeOnlyRepository.RollBackTransaccion();
                 }
                 else
                 {
                     Information("Se envio un correo con el link para cambiar su contraseña..");
-                    _writeOnlyRepository.CommitTransaccion();
                 }
             }
             else

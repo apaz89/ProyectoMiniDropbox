@@ -41,7 +41,16 @@ namespace MiniDropbox.Web.Infrastructure
                 configuration.For<PaquetesPremiumController>(x => x.Edit(new long())).DenyAnonymousAccess();
                 configuration.For<PaquetesPremiumController>(x => x.CreatePaquete()).DenyAnonymousAccess();
                 configuration.For<PaquetesPremiumController>(x => x.DesactivarPaquete(new long())).DenyAnonymousAccess();
-
+                configuration.For<DiskController>(x => x.ListAllContent()).DenyAnonymousAccess();
+                configuration.For<DiskController>(x => x.SubirArchivo()).DenyAnonymousAccess();
+                configuration.For<DiskController>(x => x.NuevoDirectorio()).DenyAnonymousAccess();
+                configuration.For<DiskController>(x => x.Ver(new long())).DenyAnonymousAccess();
+                configuration.For<DiskController>(x => x.Delete(new long())).DenyAnonymousAccess();
+                configuration.For<DiskController>(x => x.Compartir(new long())).DenyAnonymousAccess();
+                configuration.For<DiskController>(x => x.DejarCompartir(new long())).DenyAnonymousAccess();
+                configuration.For<DiskController>(x => x.CompartirArchivo(new long())).DenyAnonymousAccess();
+                configuration.For<DiskController>(x => x.VerPublico(new long())).Ignore();
+                configuration.For<DiskController>(x => x.RecursosCompartidosPublico("")).Ignore();
                 //configuration.For<DiskController>(x => x.index()).RequireRole(new object[] { "Admin" });
                 configuration.ResolveServicesUsing(type =>
                 {

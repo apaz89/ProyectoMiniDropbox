@@ -197,6 +197,7 @@
     <Compile Include="Models\DiskContentModel.cs" />
     <Compile Include="Models\FileModel.cs" />
     <Compile Include="Models\FolderModel.cs" />
+    <Compile Include="Models\FolderPublicoModel.cs" />
     <Compile Include="Models\HomeInputModel.cs" />
     <Compile Include="Models\InviteFriendsModel.cs" />
     <Compile Include="Models\ListAccountModel.cs" />
@@ -351,6 +352,10 @@
     <Content Include="Views\Disk\NuevoDirectorio.cshtml" />
     <Content Include="Views\Disk\Ver.cshtml" />
     <Content Include="Views\Disk\Buscar.cshtml" />
+    <Content Include="Views\Disk\EnlacePublico.cshtml" />
+    <Content Include="Views\Disk\Compartir.cshtml" />
+    <Content Include="Views\Disk\VerPublico.cshtml" />
+    <Content Include="Views\Disk\CompartirArchivo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

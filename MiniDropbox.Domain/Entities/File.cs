@@ -4,6 +4,7 @@ namespace MiniDropbox.Domain
 {
     public class File : IEntity
     {
+        public virtual long? ArchivosCompartidos_id { get; set; }
         public virtual long Id { get; set; }
         public virtual string Nombre { get; set; }
         public virtual long Tamanio { get; set; }
@@ -15,8 +16,6 @@ namespace MiniDropbox.Domain
         public virtual long Account_id { get; set; }
         public virtual long Drive_id { get; set; }
         public virtual long Folder_id { get; set; }
-
-
-
+        public virtual bool IsCompartido { get; set; }
     }
 }

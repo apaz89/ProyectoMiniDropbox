@@ -13,7 +13,7 @@ namespace MiniDropbox.Domain.Entities
 
         public virtual long Drive_Id { get; set; }
 
-        public virtual long Folder_Id { get; set; }
+        public virtual long? Folder_Id { get; set; }
 
         public Folder(string folderName)
         {
@@ -34,6 +34,8 @@ namespace MiniDropbox.Domain.Entities
         }
 
         public virtual string Url{ get; set; }
+
+        public virtual bool IsCompartido { get; set; }
 
         public virtual IEnumerable<Folder> Subfolders
         {

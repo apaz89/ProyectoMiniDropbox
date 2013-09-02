@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Carpeta Publica";
+    Layout = "~/Views/shared/_BootstrapLayout.basic.cshtml";
+}
+
+@using BootstrapSupport
+@model MiniDropbox.Web.Models.FolderPublicoModel
+@using (@Html.BeginForm("Compartir", "Disk", FormMethod.Post, new { @class = "form-signin" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset class="form-horizontal">
+        <legend>Compartir carpeta publica<small></small></legend>
+
+        <div>
+            <legend>Introduzca una dirección de correo electrónico y haga clic en "Enviar".
+                para enviar el acceso a su carpeta publica<small></small></legend>
+        </div>
+        @foreach (var property in Model.VisibleProperties())
+        {
+            using(Html.ControlGroupFor(property.Name)){
+                @Html.Label(property.Name.ToSeparatedWords(), new { @class = "control-label" })
+                <div class="controls">
+                    @Html.Editor(property.Name, new { @class = "input-xlarge" })
+                    @Html.ValidationMessage(property.Name, null, new { @class = "help-inline" })
+                </div>
+            }
+        }
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            @Html.ActionLink("Cancel", "ListAllContent", null, new { @class = "btn " })
+        </div>
+    </fieldset>
+   
+}

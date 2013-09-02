@@ -12,10 +12,21 @@
 
 <h2>Cargar a 'Dropbox'</h2>
 
-<form  enctype="multipart/form-data" method="post">
+@using (@Html.BeginForm("SubirArchivo", "Disk", FormMethod.Post, new { @class = "form-actions", @enctype = "multipart/form-data" }))
+{
+    <h2 class="form-signin-heading"></h2>
     <input type="file" name="fichero" />
     <button class="btn btn-small btn-success" type="submit">Cargar</button>
     <br />
     <br /> 
     @Html.ActionLink("Listo", "ListAllContent", "Disk", new { @class = "btn btn-small btn-success" })
-</form>
+}
+
+
+@*<form  enctype="multipart/form-data" method="post">
+    <input type="file" name="fichero" />
+    <button class="btn btn-small btn-success" type="submit">Cargar</button>
+    <br />
+    <br /> 
+    @Html.ActionLink("Listo", "ListAllContent", "Disk", new { @class = "btn btn-small btn-success" })
+</form>*@
